@@ -1,0 +1,88 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<body style=" 
+/* background-image: url('/static/assets/images/about-content-bg.jpg');  */
+background-size: 1500px 100%; 
+background-color: rgb(81, 83, 83);
+background-repeat: no-repeat;">
+<div class="container d-flex justify-content-center align-items-center min-vh-100 mt-5" >
+    <div class="card shadow-sm p-4 mt-5" style="max-width: 400px; width: 100%;">
+        
+        <h2 class="text-center mb-4 text-primary">Add Hotels</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="text-center mb-4 text-success">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        
+        <form action="{% url 'addHotels' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="placeName" class="form-label">Hotel name</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="placeName" 
+                       name="Name" 
+                       placeholder="Enter Place Name" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="placeLocation" class="form-label">Hotel location</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="placeLocation" 
+                       name="Location" 
+                       placeholder="Enter hotel location" 
+                       required>
+            </div>
+
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="state" 
+                       name="state" 
+                       placeholder="Enter state" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="country" 
+                       name="country" 
+                       placeholder="Enter country" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="Price" class="form-label">Price</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="Price" 
+                       name="Price" 
+                       placeholder="Enter Price" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="picture" class="form-label">Upload Picture</label>
+                <input type="file" 
+                       class="form-control" 
+                       id="picture" 
+                       name="picture" 
+                       required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Add</button>
+        </form>
+    </div>
+</div>
+</body>
+{% endblock %}
+
+{% block places %}
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<body style=" 
+background-image: url('https://wallpapercave.com/wp/wp6493768.jpg'); 
+background-size: 100% 100%; 
+background-repeat: no-repeat;">
+<div class="container d-flex justify-content-center align-items-center min-vh-100 mt-5 text-dark" >
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+        {% if messages %}
+            {% for message in messages %}
+                <p class="text-center mb-4 text-success">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        
+        <h2 class="text-center mb-4 text-primary">Add flights</h2>
+        
+        <form action="{% url 'appPlans' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="fName" class="form-label">Flight name</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="fName" 
+                       name="fName" 
+                       placeholder="Enter flight name" 
+                       required>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="From" class="form-label">From</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="From" 
+                               name="From" 
+                               placeholder="" 
+                               required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="TO" class="form-label">TO</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="TO" 
+                               name="TO" 
+                               placeholder="" 
+                               required>
+                    </div>
+                </div>
+            </div>  
+            <div class="mb-3">
+                <label for="picture" class="form-label">Time</label>
+                <input type="datetime-local" 
+                       class="form-control" 
+                       id="picture" 
+                       name="time" 
+                       required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="price" 
+                       name="price" 
+                       placeholder="Enter price.." 
+                       required>
+            </div>          
+
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="state" 
+                       name="state" 
+                       placeholder="Enter location" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="country" 
+                       name="country" 
+                       placeholder="Enter country" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="picture" class="form-label">Upload Picture</label>
+                <input type="file" 
+                       class="form-control" 
+                       id="picture" 
+                       name="picture" 
+                       required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Add</button>
+        </form>
+    </div>
+</div>
+</body>
+{% endblock %}
+
+{% block places %}
+{% endblock %}

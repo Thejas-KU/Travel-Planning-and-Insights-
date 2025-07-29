@@ -1,0 +1,97 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<body style=" 
+background-image: url('/static/assets/images/about-content-bg.jpg'); 
+background-size: 1500px 100%; 
+background-repeat: no-repeat;">
+<div class="container d-flex justify-content-center align-items-center min-vh-100 mt-5" >
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%; margin-top: 100px;">
+        {% if messages %}
+            {% for message in messages %}
+                <p class="text-center mb-4 text-success">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        
+        <h2 class="text-center mb-4 text-primary">Add Places</h2>
+        
+        <form action="{% url 'addPlaces' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="placeName" class="form-label">Place name</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="placeName" 
+                       name="placeName" 
+                       placeholder="Enter Place Name" 
+                       required>
+            </div>
+            <div class="mb-3">
+                <label for="placeType" class="form-label">Select Place Type</label>
+                <select class="form-select" id="placeType" name="placetype" required>
+                  <option value="" disabled selected>Choose a place type</option>
+                  <option value="Hill">Hill</option>
+                  <option value="Beaches">Beaches</option>
+                  <option value="Nature">Nature</option>
+                  <option value="Desert">Desert</option>
+                  <option value="Historic">Historic</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="placeLocation" class="form-label">Place location</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="placeLocation" 
+                       name="placeLocation" 
+                       placeholder="Enter location" 
+                       required>
+            </div>
+
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="state" 
+                       name="state" 
+                       placeholder="Enter location" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="country" 
+                       name="country" 
+                       placeholder="Enter country" 
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" 
+                          id="description" 
+                          name="description" 
+                          rows="4" 
+                          placeholder="Enter description" 
+                          required></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="picture" class="form-label">Upload Picture</label>
+                <input type="file" 
+                       class="form-control" 
+                       id="picture" 
+                       name="picture" 
+                       required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Add</button>
+        </form>
+    </div>
+</div>
+</body>
+{% endblock %}
+
+{% block places %}
+{% endblock %}

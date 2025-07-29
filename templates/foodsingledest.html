@@ -1,0 +1,40 @@
+{% extends "home.html" %}
+{% block main %}
+    <!-- Header Background Image Section -->
+    <div class="destination_banner_wrap overlay"
+        style="background-image: url('/{{data.img}}'); background-repeat: no-repeat; background-size: cover; background-position: center; padding: 200px 0; margin-top: 70px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.4);">
+        <div class="destination_text text-center" style="background: rgba(0, 0, 0, 0.5); padding: 30px; border-radius: 10px;">
+            <h3 style="font-size: 42px; color: #fff; font-weight: 700;">{{ data.foodname }}</h3>
+            <p style="font-size: 20px; color: #f1f1f1;">{{data.location}}</p>
+        </div>
+    </div>
+
+    <!-- Destination Details Section -->
+    <div class="destination_details_info" style="background: #fefefe; padding: 60px 0;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="destination_info" style="background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 28px; margin-bottom: 20px; color: #333;">Description</h3>
+                        <p style="font-size: 16px; color: #555; line-height: 1.8;">{{data.desc}}</p>
+
+                        <div class="single_destination" style="margin-top: 30px;">
+                            <h4 style="font-size: 20px; color: #007bff;">Opening Timings</h4>
+                            <p style="font-size: 15px; color: #666;">From 9:00 AM To 10:00 PM</p>
+                        </div>
+
+                        <div class="single_destination" style="margin-top: 30px;">
+                            <h4 style="font-size: 20px; color: #28a745;">Restaurant Details</h4>
+                            <p style="font-size: 15px; color: #444; line-height: 1.7;">
+                                The Restaurant food offers a wide variety of dishes, from gourmet meals to casual comfort food, prepared by skilled chefs using fresh ingredients. These restaurants specialize in specific cuisines such as Italian, Indian, or Asian, creating unique dining experiences. The menu typically includes appetizers, mains, desserts, and beverages to cater to different tastes. Whether fine dining or casual, restaurant food aims to deliver delicious flavors and an enjoyable atmosphere for guests.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block places %}{% endblock %}

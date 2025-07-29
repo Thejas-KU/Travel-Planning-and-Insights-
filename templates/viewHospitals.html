@@ -1,0 +1,166 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>
+    body {
+        background: linear-gradient(to right, #6dd5ed, #2193b0);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .hospital-section {
+        padding: 50px 0;
+    }
+
+    .hospital-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        background: white;
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        cursor: pointer;
+    }
+
+    .hospital-card:hover {
+        transform: rotateY(10deg) scale(1.03);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    }
+
+    .hospital-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+    .hospital-info {
+        padding: 20px;
+    }
+
+    .hospital-title {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .hospital-location {
+        color: #3498db;
+        font-size: 0.9rem;
+    }
+
+    .hospital-specialization {
+        margin: 10px 0;
+        font-size: 0.95rem;
+        color: #7f8c8d;
+    }
+
+    .hospital-timing {
+        font-size: 0.9rem;
+        color: green;
+        font-weight: 500;
+    }
+
+    .contact-btn {
+        background-color: #2980b9;
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 10px;
+        transition: background 0.3s ease;
+    }
+
+    .contact-btn:hover {
+        background-color: #1c638f;
+    }
+
+    .no-data {
+        text-align: center;
+        color: white;
+        margin-top: 60px;
+        font-size: 1.5rem;
+    }
+</style>
+
+<div class="container hospital-section" >
+    <div class="text-center mb-5" style="margin-top: 50px;">
+    {% if messages %}
+        {% for message in messages %}
+            <p class="text-danger text-center">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+        <h2 class="text-white fw-bold">Available Hospitals</h2>
+        <p class="text-light">Click a hospital card to see more details.</p>
+    </div>
+    <div class="mb-5" style="margin-left: 390px;">
+        <form class="justify-content-center" action="{% url 'viewHospitals' %}" method="post">
+            {% csrf_token %}
+            <input type="text" class="form-control w-50" placeholder="Enter location" name="location">
+            <button type="submit" class="btn btn-primary mt-2" style="margin-left: 150px;">Search</button>
+        </form>
+    </div>
+
+    {% if hospitals %}
+    <div class="row g-4">
+        {% for hospital in hospitals %}
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="hospital-card" data-bs-toggle="modal" data-bs-target="#hospitalModal{{ forloop.counter }}">
+                <img src="{{ hospital.hospitalPic.url }}" alt="Hospital Image">
+                <div class="hospital-info">
+                    <h5 class="hospital-title">{{ hospital.hospitalName }}</h5>
+                    <p class="hospital-location"><i class="bi bi-geo-alt-fill"></i>{{hospital.Address}}</p>
+                    <p class="hospital-specialization"><strong>State:</strong> {{ hospital.state }}</p>
+                    <p class="hospital-timing mb-2"><i class="bi bi-clock-history"></i> 24/7 Service</p>
+                    {% if login == 'user' %}
+                    <a class="contact-btn w-100 mt-2 text-danger" href="{% url 'viewEmargencyMails' hospital.h_emergency_mail %}">
+                        <i class="bi bi-telephone-fill"></i> Emergency mail: {{ hospital.h_emergency_mail }}
+                    </a>
+                    {% elif login == 'admin' %}
+                    <a class="contact-btn mt-2 text-danger w-100" style="margin-left: 120px;" href="{% url 'removeHospitals' hospital.hospitalId %}">
+                        Remove
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="hospitalModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="hospitalModalLabel{{ forloop.counter }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="hospitalModalLabel{{ forloop.counter }}">{{ hospital.hospitalName }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{ hospital.hospitalPic.url }}" class="img-fluid rounded mb-3" alt="Hospital Large Image">
+                        <p><strong>Address:</strong>{{hospital.Address}}</p>
+                        <p><strong>Location:</strong> {{ hospital.Location }}</p>
+                        <p><strong>State:</strong> {{ hospital.state }}</p>
+                        <p><strong>Timing:</strong> 24/7 Service</p>
+                        <p><strong>Emergency Mail:</strong> {{ hospital.h_emergency_mail }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-data">No hospitals available at the moment.</div>
+    {% endif %}
+    {% if login == 'admin' %}
+            <a class="text-center btn btn-primary w-25 mt-5" style="margin-left: 430px;" href="{% url 'addHospitals' %}">Add Hospitals</a>
+    {% endif %}
+</div>
+
+<!-- Bootstrap JS for modal functionality -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block places %}
+{% endblock %}

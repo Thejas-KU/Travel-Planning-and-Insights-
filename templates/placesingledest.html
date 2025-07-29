@@ -1,0 +1,53 @@
+{% extends "home.html" %}
+{% block main %}
+
+<!-- Hero Section with Background Image -->
+<div class="destination_banner_wrap overlay"
+    style="background-image: url('/{{data.img}}'); background-repeat: no-repeat; background-size: cover; background-position: center; padding: 220px 0; border-radius: 15px; margin-top: 70px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
+    <div class="destination_text text-center"
+        style="background: rgba(0, 0, 0, 0.55); padding: 30px; border-radius: 12px; display: inline-block;">
+        <h3 style="font-size: 48px; font-weight: 700; color: #ffffff;">{{ data.placename }}</h3>
+        <p style="font-size: 20px; color: #f1f1f1;">{{data.location}}</p>
+    </div>
+</div>
+
+<!-- Detail Section -->
+<div class="destination_details_info" style="padding: 60px 0; background: #f9f9f9;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-10">
+                <div class="destination_info" style="background: #fff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
+                    <h3 style="font-size: 30px; color: #2c3e50; margin-bottom: 25px;">Description</h3>
+                    <p style="font-size: 16px; color: #555; line-height: 1.8;">{{data.desc}}</p>
+
+                    <!-- Opening Time -->
+                    <div class="single_destination" style="margin-top: 35px;">
+                        <h4 style="font-size: 22px; color: #007bff; margin-bottom: 10px;">Opening Timings</h4>
+                        <p style="font-size: 15px; color: #666;">From 9:00 AM To 6:00 PM</p>
+                    </div>
+
+                    <!-- Travel Essentials -->
+                    <div class="single_destination" style="margin-top: 35px;">
+                        <h4 style="font-size: 22px; color: #28a745; margin-bottom: 10px;">Travel Essentials</h4>
+                        <p style="font-size: 15px; color: #444; line-height: 1.7;">
+                            {% if data.placetype == 'Hill' %}
+                            When visiting hill areas, it’s essential to pack warm clothing like jackets and thermals, comfortable trekking shoes, rain gear, woolen socks, and a first aid kit. Personal items include sunscreen, lip balm, sanitizer, flashlight, water bottle, snacks, and travel documents.
+                            {% elif data.placetype == 'Beaches' %}
+                            When visiting beaches, essentials include swimwear, sunscreen, sunglasses, a hat, towel, waterproof phone case, and hydration items. Don't forget snorkeling or surf gear for water activities.
+                            {% elif data.placetype == 'Nature' %}
+                            When visiting nature destinations, bring insect repellent, sturdy shoes, water bottle, flashlight, camera, and basic navigation tools. Binoculars and field guides enhance the experience.
+                            {% elif data.placetype == 'Desert' %}
+                            When visiting desert areas, it’s important to carry lightweight, breathable clothing to stay cool, along with a wide-brimmed hat and sunglasses for sun protection. High SPF sunscreen, a hydration pack or multiple water bottles, and energy snacks are essential. Footwear should be durable and closed-toe to protect against sand and heat. A scarf or bandana helps shield from dust storms, while a flashlight and power bank are useful for navigation in remote areas. Always carry a map, ID, and basic first aid supplies.
+                            {% elif data.placetype == 'Historic' %}
+                            When visiting historic sites, wear comfortable walking shoes as you may explore large heritage areas or museums. Carry a water bottle, hat, and sunscreen for outdoor visits. A guidebook or audio guide enhances the educational experience. A camera, notebook, and ID are useful for documentation, while light snacks and a power bank ensure convenience during long tours. Respectful attire is recommended, especially in religious or cultural locations.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block places %}{% endblock %}

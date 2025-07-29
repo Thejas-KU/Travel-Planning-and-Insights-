@@ -1,0 +1,116 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .user-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8" style="margin-top: 80px;">All Users</h1>
+        {% if messages %}
+        {% for message in messages %}
+            <p class="text-center text-danger">{{message}}</p>
+        {% endfor %}
+        {% endif %}
+        
+        <!-- Users Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for user in allUsers %}
+            <div class="user-card bg-white rounded-lg p-6 shadow-md">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                        {{ user.userName|first|upper }}
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold">{{ user.userName }}</h2>
+                        <p class="text-gray-600">{{ user.userEmail }}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="toggleDetails('{{ user.id }}')" 
+                            class="text-blue-500 hover:text-blue-700 text-sm">
+                        Show Details
+                    </button>
+                    <div id="details-{{ user.id }}" class="hidden mt-2 text-gray-700">
+                        <p><strong>Address:</strong> {{ user.addresh }}</p>
+                        <p><strong>Contact:</strong> {{ user.contact }}</p>
+                        {% if user.first_name %}
+                        <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <a class="btn btn-danger ml-5" style="margin-left: 100px;" href="{% url 'removeUser' user.userID %}">Remove user</a>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-8">
+                <p class="text-gray-500">No users found.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if allUsers.has_other_pages %}
+        <div class="mt-8 flex justify-center">
+            <nav aria-label="Pagination">
+                <ul class="inline-flex -space-x-px">
+                    {% if allUsers.has_previous %}
+                    <li>
+                        <a href="?page={{ allUsers.previous_page_number }}" 
+                           class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+                            Previous
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in allUsers.paginator.page_range %}
+                    <li>
+                        <a href="?page={{ num }}" 
+                           class="{% if allUsers.number == num %}text-blue-600 bg-blue-50{% else %}text-gray-500 bg-white{% endif %} px-3 py-2 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endfor %}
+
+                    {% if allUsers.has_next %}
+                    <li>
+                        <a href="?page={{ allUsers.next_page_number }}" 
+                           class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+                            Next
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleDetails(userId) {
+            const detailsDiv = document.getElementById(`details-${userId}`);
+            detailsDiv.classList.toggle('hidden');
+            const button = detailsDiv.previousElementSibling;
+            button.textContent = detailsDiv.classList.contains('hidden') ? 'Show Details' : 'Hide Details';
+        }
+    </script>
+</body>
+</html>
+{% endblock %}
+{% block places %}
+{% endblock %}
+{% block footer %}
+{% endblock %}

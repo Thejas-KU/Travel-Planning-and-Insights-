@@ -1,0 +1,135 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<div class="container-fluid" style="margin-top: 100px;" style="background-color: cyan;">
+
+    <!-- Floating Background -->
+    <div class="position-fixed top-0 start-0 w-100 h-100 overflow-hidden" style="z-index: -1;">
+        <div class="rounded-circle" style="width: 300px; height: 300px; background: #3498db; position: absolute; top: 10%; left: 5%; opacity: 0.3; filter: blur(60px); animation: float 15s infinite linear;"></div>
+        <div class="rounded-circle" style="width: 400px; height: 400px; background: #2ecc71; position: absolute; bottom: 10%; right: 5%; opacity: 0.3; filter: blur(60px); animation: float 15s infinite linear -5s;"></div>
+        <div class="rounded-circle" style="width: 200px; height: 200px; background: #e74c3c; position: absolute; top: 30%; right: 20%; opacity: 0.3; filter: blur(60px); animation: float 15s infinite linear -10s;"></div>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <p class="text-danger text-center">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+    <!-- Search Box -->
+    <div class="d-flex justify-content-center align-items-center py-4">
+        <form action="{% url 'destinations' %}" method="post" class="input-group rounded-pill shadow-lg w-75" style="background: white;">
+            {% csrf_token %}
+            <span class="input-group-text bg-white border-0">
+                <i class="fas fa-search text-muted"></i>
+            </span>
+            <input 
+                type="text" 
+                name="destination" 
+                class="form-control border-0" 
+                placeholder="Search for places..."  
+                style="border-radius: 50px;" 
+                required>
+            <button type="submit" class="btn btn-primary rounded-pill px-4">Search</button>
+        </form>
+    </div>
+    
+
+    <!-- Places Grid -->
+    <div class="row g-4 p-4">
+        {% for place in page_obj %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 border-0 shadow-lg place-card" style="border-radius: 15px; overflow: hidden; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d;">
+
+                <!-- Place Image -->
+                <img src="{{ place.placePic.url|default:'/static/placePic/no_profile.jpg' }}" class="card-img-top place-image" style="height: 200px; object-fit: cover; transform: translateZ(30px); transition: transform 0.5s; filter: brightness(0.9);" alt="{{ place.placeName }}">
+
+                <!-- Card Body -->
+                <div class="card-body p-4">
+                    <a href="{% url 'destdetails' place.placeID %}" class="fw-bold place-title mb-2" style="font-size: 1.25rem; text-decoration: none; color: #2c3e50;">
+                        {{ place.placeName|default:"Unnamed Place" }}
+                    </a>
+                    <div class="d-flex align-items-center text-muted mb-2">
+                        <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                        <small>{{ place.Country|default:"N/A" }}, {{ place.state|default:"N/A" }}</small>
+                    </div>
+                    <p class="card-text place-description text-secondary" style="line-height: 1.5;">{{ place.description|default:"No description available"|truncatechars:100 }}</p>
+                    <a href="{% url 'deleteTourPlaces' place.placeID %}" class="btn btn-outline-danger rounded-pill mt-3 view-button w-100">Delete place</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <h5 class="text-muted">No destinations found.</h5>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="d-flex justify-content-center my-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Floating Animation Keyframes -->
+<style>
+@keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(50px, 50px) rotate(180deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+.place-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.place-card:hover .place-image {
+    transform: translateZ(50px) scale(1.05);
+    filter: brightness(1);
+}
+
+.place-title {
+    position: relative;
+    display: inline-block;
+}
+
+.place-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #e74c3c;
+    transition: width 0.3s;
+}
+
+.place-card:hover .place-title::after {
+    width: 80px;
+}
+</style>
+
+{% endblock %}
+
+{% block places %}{% endblock %}
+{% block footer %}{% endblock %}

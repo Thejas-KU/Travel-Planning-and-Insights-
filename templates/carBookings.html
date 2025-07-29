@@ -1,0 +1,113 @@
+
+  {% extends 'home.html' %}
+  {% block main %}
+    <style>
+        body {
+            /* background: url('https://images.unsplash.com/photo-1532453288672-3a823f42fd79?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed; */
+            background-size: cover;
+            color: #333;
+            background-color: rgb(189, 201, 243);
+        }
+        .navbar {
+            background-color: rgba(0, 51, 102, 0.9);
+        }
+        .hero-section {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            padding: 40px;
+            margin-top: 50px;
+        }
+        .cab-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .cab-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .btn-book {
+            background-color: #ff6200;
+            border: none;
+        }
+        .btn-book:hover {
+            background-color: #e55a00;
+        }
+        footer {
+            background-color: rgba(0, 51, 102, 0.9);
+            color: white;
+            padding: 20px 0;
+        }
+    </style>
+      <div style="margin-top: 60px;">
+        <div>
+            <!-- Hero Section with Booking Form -->
+            <section class="hero-section container">
+                <h1 class="text-center mb-4">Book Your Ride</h1>
+                {% if messages %}
+                    {% for message in messages %}
+                    <p class="text-danger text-center">{{message}}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="text-center mb-5">Travel the city with ease using CityRide's reliable cab service!</p>
+                <form action="{% url 'view_and_book_cars' %}" method="post" class="row g-3" style="margin-left: 400px;">
+                    {% csrf_token %}
+                    <div class="col-md-3">
+                        <label for="pickup" class="form-label">Pickup Location</label>
+                        <input type="text" class="form-control" id="pickup" placeholder="Enter pickup address" name="pickup">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="passengers" class="form-label">Passengers</label>
+                        <select class="form-select" id="passengers" name="passengers">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4+</option>
+                        </select>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-book btn-lg mt-3" style="margin-right: 400px;">Search Cabs</button>
+                    </div>
+                </form>
+            </section>
+            {% if all_Vehicles %}
+            <!-- Cab Results Section -->
+            <section class="container my-5">
+                <h2 class="text-center mb-4">Available Cabs</h2>
+                <div class="row">
+                    {% for vehicle in all_Vehicles %}
+                    <!-- Cab Card 1 -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card cab-card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{vehicle.carCompany}}</h5>
+                                <p class="card-text">
+                                    <strong>Location:</strong> {{vehicle.Location}}<br>
+                                    <strong>State:</strong>{{vehicle.state}}<br>
+                                    <strong>Price:</strong> {{vehicle.price}}
+                                </p>
+                                {% if login == 'user' %}
+                                <a href="{% url 'payment' vehicle.carId %}" class="btn btn-book w-100">Book Now</a>
+                                {% elif login == 'admin' %}
+                                <a href="{% url 'removeVehicles' vehicle.carId %}" class="btn btn-book w-100">Remove</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Cab Card 2 -->
+                    <!-- Cab Card 3 -->
+                </div>
+                
+            </section>
+            
+            {% else %}
+            <h4 class="text-center text-primary">No vehicles available..</h4>
+            {% endif %}
+            {% if login == 'admin' %}
+                    <a class="text-center btn btn-primary w-25 mt-4" style="margin-left: 500px;" href="{% url 'addCars' %}">Add vehicles</a>
+            {% endif %}
+        </div>
+      </div>
+  {% endblock %}
+  {% block places %}
+  {% endblock %}

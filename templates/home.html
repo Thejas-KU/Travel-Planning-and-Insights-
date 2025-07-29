@@ -1,0 +1,179 @@
+{% extends 'index.html' %}
+
+{% block nav %}
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="index.html" class="logo rounded d-flex align-items-center" style="text-decoration: none; transform: translatex(-125px);">
+                      <img src="/static/assets/images/logo.jpg" alt="Logo" style="height: 50px; width: 120px; object-fit: cover; border-radius: 20px; transform: translateY(-9px);" class="me-3">
+                      <h5 style=" color: white; margin: 0; font-family: 'Poppins', sans-serif;">
+                          AI Driven Destination Planning Insights
+                      </h5>
+                  </a> 
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                      {% if login == 'user' %}
+                      <li class="nav-item">
+                        <a href="{% url 'home' %}" class="nav-link ">Home</a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'userProfile' %}" class="nav-link ">View profile</a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'viewPlaces' %}" class="nav-link ">View places</a>
+                      </li>
+                      <!-- <li class="nav-item">
+                        <a href="{% url 'about' %}" class="nav-link">About</a>
+                      </li> -->
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Others
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <li><a class="dropdown-item mb-2 text-dark" href="{% url 'viewFlights' %}">View flights</a></li>
+                          <li><a class="dropdown-item text-dark" href="{% url 'viewHotels' %}">View hotels</a></li>
+                          <li><a class="dropdown-item text-dark" href="{% url 'view_and_book_cars' %}">View vehicles</a></li>
+                          <li><a class="dropdown-item text-dark" href="{% url 'viewHospitals' %}">View hospitals</a></li>
+                        </ul>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="nav-link ">Logout</a>
+                      </li>
+                    </ul>
+                    <li class="nav-item">
+                      <a href="{% url 'chatbot_page' %}" class="logo rounded d-flex align-items-center" style="text-decoration: none; transform: translateX(100px);">
+                        <img src="/static/assets/images/chat-bot.png" alt="Logo" style="height: 50px; width: 50px; object-fit: cover; border-radius: 20px; transform: translateY(-5px);" class="">
+                      </a>  
+                    </li>
+                      
+                    {% elif login == 'admin' %}
+                      <li class="nav-item">
+                        <a href="{% url 'home' %}" class="nav-link">Home</a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'viewUsers' %}" class="nav-link">View Users</a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'destinations' %}" class="nav-link">View places</a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'addPlaces' %}" class="nav-link">Add places</a>
+                      </li>
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Others
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <li><a class="dropdown-item  text-dark" href="{% url 'viewFlights' %}">Add/View flights</a></li>
+                          <li><a class="dropdown-item text-dark" href="{% url 'addHotels' %}">Add hotels</a></li>
+                          <li><a class="dropdown-item text-dark" href="{% url 'view_and_book_cars' %}">Add/View vehicles</a></li>
+                          <li><a class="dropdown-item text-dark" href="{% url 'viewHospitals' %}">Add/View hospitals</a></li>
+                          <li><a class="dropdown-item text-dark" href="{% url 'viewAllEmergencyMails' %}">View Emergency mails</a></li>
+                        </ul>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="nav-link ">Logout</a>
+                      </li>
+                    </ul>
+                    {% endif %}
+                      
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+  </header>
+  {% endblock %}
+  
+ 
+  {% block places %}
+  {% if login == 'user' %}
+<div class="visit-country">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-5">
+        <div class="section-heading">
+          <h2>Visit One Of Our Countries Now</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="items">
+          <div class="row">
+            {% for country in places %}
+            <div class="col-lg-12">
+              <div class="item {% if forloop.last %}last-item{% endif %}">
+                <div class="row">
+                  <div class="col-lg-4 col-sm-5">
+                    <div class="image">
+                      <img src="{{country.placePic.url}}" alt="{{ country.Country }}">
+                    </div>
+                  </div>
+                  <div class="col-lg-8 col-sm-7">
+                    <div class="right-content">
+                      <h4>{{ country.Country|upper }}</h4>
+                      <a href="{% url 'destdetails' country.placeID %}">{{ country.placeName }}</a>
+                      
+                      <p>{{ country.description }}</p>
+                      <ul class="info">
+                        <li><i class="fa fa-globe"></i> {{ country.placeLocation }}</li>
+                        <li><i class="fa fa-map"></i> {{ country.state }}</li>
+                        <li><i class="fa fa-home"></i> ${{ country.price }}</li>
+                      </ul>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+            <div class="col-lg-12">
+              <ul class="page-numbers">
+                {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-arrow-left"></i></a></li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                <li class="{% if page_obj.number == num %}active{% endif %}">
+                  <a href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}"><i class="fa fa-arrow-right"></i></a></li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="side-bar-map">
+          <div class="row">
+            <div class="col-lg-12">
+              <div id="map">
+                <iframe src="https://www.google.com/maps/embed?pb=..." width="100%" height="550px" frameborder="0" style="border:0; border-radius: 23px;" allowfullscreen=""></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+ 

@@ -1,0 +1,168 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<style>
+    /* --- Your Existing CSS: Form hover, cards, etc. --- */
+</style>
+
+<div class="view-places-container" style="margin-top: 70px;">
+
+    <!-- Hero Carousel Section -->
+    {% if page_obj %}
+    <div id="placesCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for place in page_obj %}
+            <button type="button" data-bs-target="#placesCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for place in page_obj %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}" style="height: 500px;">
+                <img src="{{ place.placePic.url|default:'/static/placePic/no_profile.jpg' }}" 
+                     class="d-block w-100 h-100" 
+                     alt="{{ place.placeName }}" 
+                     style="object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="display-5 fw-bold">{{ place.placeName }}</h2>
+                    <p class="fs-5">{{ place.Country }} - {{ place.state }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#placesCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#placesCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Search Form -->
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="h3 fw-bold">Explore Our Places</h2>
+            <p class="text-muted">Browse through our collection of stunning travel destinations.</p>
+
+            <div class="container my-5 w-50">
+                <form class="p-4 p-md-5 bg-white rounded-3 shadow-lg form-3d" action="{% url 'viewPlaces' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="inputField" class="form-label fw-bold">Search Destination</label>
+                        <input type="text" id="inputField" name="destination" class="form-control form-control-lg rounded-pill" placeholder="Enter a place..." {% if search_query %}value="{{ search_query }}"{% endif %} required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Places Grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for place in page_obj %}
+            <div class="col">
+                <div class="place-card card h-100 border-0 shadow">
+                    <div id="placeCarousel{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel" style="height: 200px;">
+                        <div class="carousel-inner h-100">
+                            {% for image in place.images.all|slice:":5" %}
+                            <div class="carousel-item h-100 {% if forloop.first %}active{% endif %}">
+                                <img src="{{ image.image.url }}" class="d-block w-100 h-100" style="object-fit: cover;" alt="">
+                            </div>
+                            {% empty %}
+                            <div class="carousel-item active h-100">
+                                <img src="{{ place.placePic.url|default:'/static/placePic/no_profile.jpg' }}" class="d-block w-100 h-100" style="object-fit: cover;" alt="">
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if place.images.count > 1 %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#placeCarousel{{ forloop.counter }}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#placeCarousel{{ forloop.counter }}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ place.placeName|default:"Unnamed Place" }}</h5>
+                        <p class="card-text text-muted small">{{ place.Country|default:"N/A" }} - {{ place.state|default:"N/A" }}</p>
+                        <p class="card-text description">{{ place.description|default:"No description available"|truncatechars:150 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="text-primary fw-bold">${{ place.price|default:"N/A" }}</span>
+                            
+                        </div>
+                        <p class="card-text small text-muted mt-2"><strong>Location:</strong> {{ place.placeLocation|default:"N/A" }}</p>
+                        <a href="{% url 'destdetails' place.placeID %}" class="text-white w-100 mt-1 small btn btn-primary">Explore More</a>
+                    </div>
+                </div>
+                
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <h5 class="text-muted">No destinations found{% if search_query %} for "{{ search_query }}"{% endif %}.</h5>
+                {% if login == 'admin' %}
+                <a href="{% url 'addPlaces' %}" class="btn btn-primary mt-3">Add Your First Place</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="d-flex justify-content-center mt-5">
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new bootstrap.Carousel(document.getElementById('placesCarousel'), {
+            interval: 5000,
+            wrap: true,
+            pause: 'hover'
+        });
+        document.querySelectorAll('.place-card .carousel').forEach(function(carousel) {
+            new bootstrap.Carousel(carousel, {
+                interval: 3000,
+                wrap: true,
+                pause: 'hover'
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% block places %}{% endblock %}

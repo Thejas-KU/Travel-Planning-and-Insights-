@@ -1,0 +1,66 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<style>
+    .emergency-container {
+        margin-top: 80px;
+        margin-bottom: 60px;
+    }
+
+    .table-container {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+    }
+
+    .table th {
+        background-color: #0d6efd;
+        color: white;
+        text-align: center;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .table-container {
+            padding: 15px;
+        }
+    }
+</style>
+
+<div class="container emergency-container">
+    <h2 class="text-center mb-4 fw-bold">📬 Emergency Mail Logs</h2>
+
+    <div class="table-container">
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Hospital Email</th>
+                    <th>User Email</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mail in emergency_mails %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ mail.hospitalMail }}</td>
+                        <td>{{ mail.userEmail }}</td>
+                        <td>{{ mail.timeStamp|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No emergency mails found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

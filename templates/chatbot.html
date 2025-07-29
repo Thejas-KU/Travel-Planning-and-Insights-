@@ -1,0 +1,178 @@
+<!-- templates/chatbot.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Chatbot</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #c3dafe, #e0eafc);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .chat-container {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+      max-width: 800px;
+      width: 100%;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-header {
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: white;
+      padding: 16px 24px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .chat-header img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+    }
+    .chat-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f1f5f9;
+    }
+    .message {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+    }
+    .message.user {
+      justify-content: flex-end;
+    }
+    .message-content {
+      max-width: 70%;
+      padding: 12px 18px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+    }
+    .bot .message-content {
+      background: #edf2ff;
+      color: #1a202c;
+      border-bottom-left-radius: 5px;
+    }
+    .user .message-content {
+      background: #667eea;
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+    .chat-footer {
+      padding: 15px 20px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+    }
+    .chat-footer form {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-footer input {
+      flex: 1;
+      border-radius: 25px;
+      padding: 12px 20px;
+      border: 1px solid #cbd5e1;
+    }
+    .chat-footer button {
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 20px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <img src="/static/assets/images/chat-bot.png" alt="AI Avatar">
+      <h3 class="mb-0">Chatbot</h3>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="message bot">
+        <div class="message-content">Hello! How can I assist you today?</div>
+      </div>
+    </div>
+    <div class="chat-footer">
+      <form id="chatForm">
+        <input type="text" id="userInput" placeholder="Type your message..." required>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    const chatForm = document.getElementById('chatForm');
+    const userInput = document.getElementById('userInput');
+    const chatBody = document.getElementById('chatBody');
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      // Display user message
+      const userMessage = document.createElement('div');
+      userMessage.className = 'message user';
+      userMessage.innerHTML = `<div class="message-content">${message}</div>`;
+      chatBody.appendChild(userMessage);
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      // Fetch bot response
+      try {
+        const response = await fetch('/chatbot/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        const botMessage = document.createElement('div');
+        botMessage.className = 'message bot';
+        botMessage.innerHTML = `<div class="message-content">${data.reply}</div>`;
+        chatBody.appendChild(botMessage);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      } catch (error) {
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'message bot';
+        errorMessage.innerHTML = `<div class="message-content">Something went wrong. Please try again.</div>`;
+        chatBody.appendChild(errorMessage);
+      }
+
+      userInput.value = '';
+    });
+  </script>
+</body>
+</html>

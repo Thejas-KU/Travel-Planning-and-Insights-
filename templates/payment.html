@@ -1,0 +1,96 @@
+{% extends 'home.html' %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .payment-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .payment-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 450px;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+        .payment-card:hover {
+            transform: translateY(-5px);
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+        }
+        .btn-pay {
+            background: #4f46e5;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        .btn-pay:hover {
+            background: #4338ca;
+        }
+        .alert-success {
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container" style="margin-top: 50px;">
+        <div class="payment-card">
+            <h1 class="text-3xl font-bold text-center text-dark mb-5">Secure Payment</h1>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success text-center" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'payment' id %}" class="mt-4">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="amount" class="form-label text-dark fw-medium">Amount</label>
+                    <input type="number" id="amount" name="amount" placeholder="Enter amount" min="1" required
+                           class="form-control">
+                </div>
+                <div class="mb-4">
+                    <label for="cardNumber" class="form-label text-dark fw-medium">Card Number</label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="Enter card number" required
+                           class="form-control">
+                </div>
+                <button type="submit" class="btn btn-pay w-100 text-white">Pay Now</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}
+
+{% block places %}{% endblock %}
+{% block footer %}{% endblock %}
